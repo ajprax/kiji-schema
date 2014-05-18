@@ -56,7 +56,7 @@ import org.kiji.schema.layout.KijiColumnNameTranslator;
 import org.kiji.schema.layout.KijiTableLayout;
 import org.kiji.schema.layout.KijiTableLayout.LocalityGroupLayout.FamilyLayout;
 import org.kiji.schema.layout.KijiTableLayout.LocalityGroupLayout.FamilyLayout.ColumnLayout;
-import org.kiji.schema.layout.impl.CellEncoderProvider;
+import org.kiji.schema.layout.impl.BaseCellEncoderProvider;
 import org.kiji.schema.layout.impl.LayoutCapsule;
 import org.kiji.schema.platform.SchemaPlatformBridge;
 
@@ -103,7 +103,7 @@ public final class HBaseKijiTableWriter implements KijiTableWriter {
    * the underlying table's layout.
    */
   public static final class WriterLayoutCapsule {
-    private final CellEncoderProvider mCellEncoderProvider;
+    private final BaseCellEncoderProvider mCellEncoderProvider;
     private final KijiTableLayout mLayout;
     private final KijiColumnNameTranslator mTranslator;
 
@@ -115,7 +115,7 @@ public final class HBaseKijiTableWriter implements KijiTableWriter {
      * @param translator the column name translator to store in this container.
      */
     public WriterLayoutCapsule(
-        final CellEncoderProvider cellEncoderProvider,
+        final BaseCellEncoderProvider cellEncoderProvider,
         final KijiTableLayout layout,
         final KijiColumnNameTranslator translator) {
       mCellEncoderProvider = cellEncoderProvider;
@@ -146,7 +146,7 @@ public final class HBaseKijiTableWriter implements KijiTableWriter {
      *
      * @return the encoder provider from this container.
      */
-    public CellEncoderProvider getCellEncoderProvider() {
+    public BaseCellEncoderProvider getCellEncoderProvider() {
       return mCellEncoderProvider;
     }
   }
@@ -161,7 +161,7 @@ public final class HBaseKijiTableWriter implements KijiTableWriter {
         LOG.debug("Writer is closed: ignoring layout update.");
         return;
       }
-      final CellEncoderProvider provider = new CellEncoderProvider(
+      final BaseCellEncoderProvider provider = new BaseCellEncoderProvider(
           mTable.getURI(),
           capsule.getLayout(),
           mTable.getKiji().getSchemaTable(),

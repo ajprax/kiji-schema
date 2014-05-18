@@ -57,7 +57,7 @@ import org.kiji.schema.impl.BoundColumnReaderSpec;
 import org.kiji.schema.layout.ColumnReaderSpec;
 import org.kiji.schema.layout.KijiColumnNameTranslator;
 import org.kiji.schema.layout.KijiTableLayout;
-import org.kiji.schema.layout.impl.CellDecoderProvider;
+import org.kiji.schema.layout.impl.BaseCellDecoderProvider;
 import org.kiji.schema.layout.impl.LayoutCapsule;
 import org.kiji.schema.util.TimestampComparator;
 
@@ -84,7 +84,7 @@ public final class HBaseKijiRowData implements KijiRowData {
   private Result mResult;
 
   /** Provider for cell decoders. */
-  private final CellDecoderProvider mDecoderProvider;
+  private final BaseCellDecoderProvider mDecoderProvider;
 
   /** A map from kiji family to kiji qualifier to timestamp to raw encoded cell values. */
   private NavigableMap<String, NavigableMap<String, NavigableMap<Long, byte[]>>> mFilteredMap;
@@ -98,9 +98,9 @@ public final class HBaseKijiRowData implements KijiRowData {
    * @return a new CellDecoderProvider for the specified HBase KijiTable.
    * @throws IOException on I/O error.
    */
-  private static CellDecoderProvider createCellProvider(HBaseKijiTable table) throws IOException {
+  private static BaseCellDecoderProvider createCellProvider(HBaseKijiTable table) throws IOException {
     final LayoutCapsule capsule = table.getLayoutCapsule();
-    return new CellDecoderProvider(
+    return new BaseCellDecoderProvider(
         capsule.getLayout(),
         Maps.<KijiColumnName, BoundColumnReaderSpec>newHashMap(),
         Sets.<BoundColumnReaderSpec>newHashSet(),
@@ -130,7 +130,7 @@ public final class HBaseKijiRowData implements KijiRowData {
       KijiDataRequest dataRequest,
       EntityId entityId,
       Result result,
-      CellDecoderProvider decoderProvider)
+      BaseCellDecoderProvider decoderProvider)
       throws IOException {
     mTable = table;
     mTableLayout = table.getLayout();
@@ -141,7 +141,7 @@ public final class HBaseKijiRowData implements KijiRowData {
   }
 
   /**
-   * Get the decoder for the given column from the {@link CellDecoderProvider}.
+   * Get the decoder for the given column from the {@link org.kiji.schema.layout.impl.BaseCellDecoderProvider}.
    *
    * @param column column for which to get a cell decoder.
    * @param <T> the type of the value encoded in the cell.

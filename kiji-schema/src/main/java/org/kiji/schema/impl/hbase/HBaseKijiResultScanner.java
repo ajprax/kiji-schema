@@ -38,7 +38,7 @@ import org.kiji.schema.KijiDataRequest;
 import org.kiji.schema.KijiIOException;
 import org.kiji.schema.KijiResultScanner;
 import org.kiji.schema.layout.KijiColumnNameTranslator;
-import org.kiji.schema.layout.impl.CellDecoderProvider;
+import org.kiji.schema.layout.impl.BaseCellDecoderProvider;
 
 /** Scanner across rows of a KijiTable which returns a KijiResult per row. */
 public class HBaseKijiResultScanner implements KijiResultScanner {
@@ -67,7 +67,7 @@ public class HBaseKijiResultScanner implements KijiResultScanner {
   private final KijiDataRequest mRequest;
   private final HBaseKijiTable mTable;
   private final Scan mScan;
-  private final CellDecoderProvider mDecoderProvider;
+  private final BaseCellDecoderProvider mDecoderProvider;
   private final KijiColumnNameTranslator mColumnNameTranslator;
   private final EntityIdFactory mEidFactory;
   private final HTableInterface mHTable;
@@ -92,7 +92,7 @@ public class HBaseKijiResultScanner implements KijiResultScanner {
       final KijiDataRequest request,
       final HBaseKijiTable table,
       final Scan scan,
-      final CellDecoderProvider decoderProvider,
+      final BaseCellDecoderProvider decoderProvider,
       final KijiColumnNameTranslator columnNameTranslator,
       final boolean reopenScannerOnTimeout
   ) throws IOException {

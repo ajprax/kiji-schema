@@ -38,11 +38,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.kiji.annotations.ApiAudience;
+import org.kiji.schema.KijiColumnName;
 import org.kiji.schema.KijiIOException;
 import org.kiji.schema.KijiMetaTable;
 import org.kiji.schema.KijiSchemaTable;
+import org.kiji.schema.KijiTableReaderBuilder;
 import org.kiji.schema.KijiURI;
 import org.kiji.schema.RuntimeInterruptedException;
+import org.kiji.schema.impl.BoundColumnReaderSpec;
 import org.kiji.schema.impl.LayoutConsumer;
 import org.kiji.schema.layout.KijiColumnNameTranslator;
 import org.kiji.schema.layout.KijiTableLayout;
@@ -176,7 +179,21 @@ public final class TableLayoutMonitor implements AutoReferenceCounted {
     } else {
       final KijiTableLayout layout =
           mMetaTable.getTableLayout(mTableURI.getTable()).setSchemaTable(mSchemaTable);
-      mLayoutCapsule.set(new LayoutCapsule(layout, KijiColumnNameTranslator.from(layout)));
+      final BaseCellEncoderProvider encoderProvider = new BaseCellEncoderProvider(
+          mTableURI,
+          layout,
+          mSchemaTable,
+          org.kiji.schema.impl.DefaultKijiCellEncoderFactory.get());
+      final BaseCellDecoderProvider decoderProvider = new BaseCellDecoderProvider(
+          layout,
+          Collections.<KijiColumnName, BoundColumnReaderSpec>emptyMap(),
+          Collections.<BoundColumnReaderSpec>emptyList(),
+          KijiTableReaderBuilder.DEFAULT_CACHE_MISS);
+      mLayoutCapsule.set(
+          new LayoutCapsule(layout,
+          KijiColumnNameTranslator.from(layout),
+          encoderProvider,
+          decoderProvider));
     }
     return this;
   }
@@ -272,7 +289,21 @@ public final class TableLayoutMonitor implements AutoReferenceCounted {
     Preconditions.checkState(mState.get() == State.STARTED,
         "TableLayoutMonitor has not been started.");
     layout.setSchemaTable(mSchemaTable);
-    final LayoutCapsule capsule = new LayoutCapsule(layout, KijiColumnNameTranslator.from(layout));
+    final BaseCellEncoderProvider encoderProvider = new BaseCellEncoderProvider(
+        mTableURI,
+        layout,
+        mSchemaTable,
+        org.kiji.schema.impl.DefaultKijiCellEncoderFactory.get());
+    final BaseCellDecoderProvider decoderProvider = new BaseCellDecoderProvider(
+        layout,
+        Collections.<KijiColumnName, BoundColumnReaderSpec>emptyMap(),
+        Collections.<BoundColumnReaderSpec>emptyList(),
+        KijiTableReaderBuilder.DEFAULT_CACHE_MISS);
+    final LayoutCapsule capsule = new LayoutCapsule(
+        layout,
+        KijiColumnNameTranslator.from(layout),
+        encoderProvider,
+        decoderProvider);
     for (LayoutConsumer consumer : getLayoutConsumers()) {
       consumer.update(capsule);
     }
@@ -360,7 +391,22 @@ public final class TableLayoutMonitor implements AutoReferenceCounted {
             "New layout ID %s does not match most recent layout ID %s from meta-table.",
             notifiedLayoutID, newLayout.getDesc().getLayoutId());
 
-        mLayoutCapsule.set(new LayoutCapsule(newLayout, KijiColumnNameTranslator.from(newLayout)));
+        final BaseCellEncoderProvider encoderProvider = new BaseCellEncoderProvider(
+            mTableURI,
+            newLayout,
+            mSchemaTable,
+            org.kiji.schema.impl.DefaultKijiCellEncoderFactory.get());
+        final BaseCellDecoderProvider decoderProvider = new BaseCellDecoderProvider(
+            newLayout,
+            Collections.<KijiColumnName, BoundColumnReaderSpec>emptyMap(),
+            Collections.<BoundColumnReaderSpec>emptyList(),
+            KijiTableReaderBuilder.DEFAULT_CACHE_MISS);
+
+        mLayoutCapsule.set(new LayoutCapsule(
+            newLayout,
+            KijiColumnNameTranslator.from(newLayout),
+            encoderProvider,
+            decoderProvider));
 
         // Propagates the new layout to all consumers.
         // A copy of mConsumers is made in order to avoid concurrent modifications while iterating.

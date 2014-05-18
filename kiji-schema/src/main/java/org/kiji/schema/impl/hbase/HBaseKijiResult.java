@@ -56,7 +56,7 @@ import org.kiji.schema.hbase.HBaseColumnName;
 import org.kiji.schema.impl.BoundColumnReaderSpec;
 import org.kiji.schema.layout.ColumnReaderSpec;
 import org.kiji.schema.layout.KijiColumnNameTranslator;
-import org.kiji.schema.layout.impl.CellDecoderProvider;
+import org.kiji.schema.layout.impl.BaseCellDecoderProvider;
 
 /** HBase implementation of KijiResult. */
 @ApiAudience.Private
@@ -267,7 +267,7 @@ public final class HBaseKijiResult implements KijiResult {
   private final KijiDataRequest mDataRequest;
   private final Result mUnpagedResult;
   private final KijiColumnNameTranslator mColumnNameTranslator;
-  private final CellDecoderProvider mCellDecoderProvider;
+  private final BaseCellDecoderProvider mCellDecoderProvider;
   private final HBaseKijiTable mTable;
   private final KeyValueToKijiCell<Object> mKeyValueToKijiCell;
 
@@ -289,7 +289,7 @@ public final class HBaseKijiResult implements KijiResult {
       final KijiDataRequest dataRequest,
       final Result unPagedResult,
       final KijiColumnNameTranslator columnNameTranslator,
-      final CellDecoderProvider cellDecoderProvider,
+      final BaseCellDecoderProvider cellDecoderProvider,
       final HBaseKijiTable table
   ) {
     mEntityId = entityId;

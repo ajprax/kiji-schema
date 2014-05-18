@@ -41,7 +41,7 @@ import org.kiji.schema.impl.DefaultKijiCellEncoderFactory;
 import org.kiji.schema.impl.LayoutConsumer;
 import org.kiji.schema.impl.hbase.HBaseKijiTableWriter.WriterLayoutCapsule;
 import org.kiji.schema.layout.LayoutUpdatedException;
-import org.kiji.schema.layout.impl.CellEncoderProvider;
+import org.kiji.schema.layout.impl.BaseCellEncoderProvider;
 import org.kiji.schema.layout.impl.LayoutCapsule;
 
 /**
@@ -131,7 +131,7 @@ public final class HBaseAtomicKijiPutter implements AtomicKijiPutter {
       synchronized (mLock) {
         mLayoutOutOfDate = true;
         // Update the state of the writer.
-        final CellEncoderProvider provider = new CellEncoderProvider(
+        final BaseCellEncoderProvider provider = new BaseCellEncoderProvider(
             mTable.getURI(),
             capsule.getLayout(),
             mTable.getKiji().getSchemaTable(),
@@ -254,7 +254,7 @@ public final class HBaseAtomicKijiPutter implements AtomicKijiPutter {
       encoded = null;
     } else {
       final KijiCellEncoder cellEncoder =
-          capsule.getCellEncoderProvider().getEncoder(family, qualifier);
+          capsule.getCellEncoderProvider().getEncoder(kijiColumnName);
       encoded = cellEncoder.encode(value);
     }
 
@@ -302,7 +302,7 @@ public final class HBaseAtomicKijiPutter implements AtomicKijiPutter {
         capsule.getColumnNameTranslator().toHBaseColumnName(kijiColumnName);
 
     final KijiCellEncoder cellEncoder =
-        capsule.getCellEncoderProvider().getEncoder(family, qualifier);
+        capsule.getCellEncoderProvider().getEncoder(kijiColumnName);
     final byte[] encoded = cellEncoder.encode(value);
 
     mHopper.add(new KeyValue(

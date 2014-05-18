@@ -55,7 +55,7 @@ import org.kiji.schema.impl.DefaultKijiCellEncoderFactory;
 import org.kiji.schema.impl.LayoutConsumer;
 import org.kiji.schema.layout.KijiTableLayout.LocalityGroupLayout.FamilyLayout;
 import org.kiji.schema.layout.KijiTableLayout.LocalityGroupLayout.FamilyLayout.ColumnLayout;
-import org.kiji.schema.layout.impl.CellEncoderProvider;
+import org.kiji.schema.layout.impl.BaseCellEncoderProvider;
 import org.kiji.schema.layout.impl.LayoutCapsule;
 import org.kiji.schema.platform.SchemaPlatformBridge;
 
@@ -136,7 +136,7 @@ public final class HBaseKijiBufferedWriter implements KijiBufferedWriter {
           flush();
         }
 
-        final CellEncoderProvider provider = new CellEncoderProvider(
+        final BaseCellEncoderProvider provider = new BaseCellEncoderProvider(
             mTable.getURI(),
             capsule.getLayout(),
             mTable.getKiji().getSchemaTable(),

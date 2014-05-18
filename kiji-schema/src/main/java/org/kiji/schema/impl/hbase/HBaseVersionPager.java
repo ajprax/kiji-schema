@@ -41,7 +41,7 @@ import org.kiji.schema.KijiDataRequestBuilder.ColumnsDef;
 import org.kiji.schema.KijiIOException;
 import org.kiji.schema.KijiPager;
 import org.kiji.schema.KijiRowData;
-import org.kiji.schema.layout.impl.CellDecoderProvider;
+import org.kiji.schema.layout.impl.BaseCellDecoderProvider;
 import org.kiji.schema.layout.impl.LayoutCapsule;
 
 /**
@@ -70,7 +70,7 @@ public final class HBaseVersionPager implements KijiPager {
   private final HBaseKijiTable mTable;
 
   /** Provider for cell decoders. */
-  private final CellDecoderProvider mCellDecoderProvider;
+  private final BaseCellDecoderProvider mCellDecoderProvider;
 
   /** Name of the column being paged through. */
   private final KijiColumnName mColumnName;
@@ -117,7 +117,7 @@ public final class HBaseVersionPager implements KijiPager {
       KijiDataRequest dataRequest,
       HBaseKijiTable table,
       KijiColumnName colName,
-      CellDecoderProvider cellDecoderProvider)
+      BaseCellDecoderProvider cellDecoderProvider)
       throws KijiColumnPagingNotEnabledException {
     Preconditions.checkArgument(colName.isFullyQualified());
 

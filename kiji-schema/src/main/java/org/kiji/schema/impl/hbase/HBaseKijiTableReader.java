@@ -64,7 +64,7 @@ import org.kiji.schema.layout.ColumnReaderSpec;
 import org.kiji.schema.layout.InvalidLayoutException;
 import org.kiji.schema.layout.KijiColumnNameTranslator;
 import org.kiji.schema.layout.KijiTableLayout;
-import org.kiji.schema.layout.impl.CellDecoderProvider;
+import org.kiji.schema.layout.impl.BaseCellDecoderProvider;
 import org.kiji.schema.layout.impl.LayoutCapsule;
 
 /**
@@ -112,7 +112,7 @@ public final class HBaseKijiTableReader implements KijiTableReader {
    * layout update.
    */
   private static final class ReaderLayoutCapsule {
-    private final CellDecoderProvider mCellDecoderProvider;
+    private final BaseCellDecoderProvider mCellDecoderProvider;
     private final KijiTableLayout mLayout;
     private final KijiColumnNameTranslator mTranslator;
 
@@ -125,7 +125,7 @@ public final class HBaseKijiTableReader implements KijiTableReader {
      * @param translator the KijiColumnNameTranslator to cache.
      */
     private ReaderLayoutCapsule(
-        final CellDecoderProvider cellDecoderProvider,
+        final BaseCellDecoderProvider cellDecoderProvider,
         final KijiTableLayout layout,
         final KijiColumnNameTranslator translator) {
       mCellDecoderProvider = cellDecoderProvider;
@@ -155,7 +155,7 @@ public final class HBaseKijiTableReader implements KijiTableReader {
      * @return the CellDecoderProvider including CellSpec overrides for providing cell decoders for
      * the current layout.
      */
-    private CellDecoderProvider getCellDecoderProvider() {
+    private BaseCellDecoderProvider getCellDecoderProvider() {
       return mCellDecoderProvider;
     }
   }
@@ -169,15 +169,15 @@ public final class HBaseKijiTableReader implements KijiTableReader {
         LOG.debug("KijiTableReader instance is closed; ignoring layout update.");
         return;
       }
-      final CellDecoderProvider provider;
+      final BaseCellDecoderProvider provider;
       if (null != mCellSpecOverrides) {
-        provider = new CellDecoderProvider(
+        provider = new BaseCellDecoderProvider(
             capsule.getLayout(),
             mTable.getKiji().getSchemaTable(),
             SpecificCellDecoderFactory.get(),
             mCellSpecOverrides);
       } else {
-        provider = new CellDecoderProvider(
+        provider = new BaseCellDecoderProvider(
             capsule.getLayout(),
             mOverrides,
             mAlternatives,

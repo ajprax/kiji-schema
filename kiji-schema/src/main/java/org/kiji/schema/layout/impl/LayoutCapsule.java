@@ -27,15 +27,13 @@ import org.kiji.schema.layout.KijiTableLayout;
  * layout updates atomically.  This object represents a snapshot of the table layout at a moment
  * in time which is valuable for maintaining consistency within a short-lived operation.  Because
  * this object represents a snapshot it should not be cached.
- *
- * Does not include CellDecoderProvider or CellEncoderProvider because readers and writers need to
- * be able to override CellSpecs.  Does not include EntityIdFactory because currently there are no
- * valid table layout updates that modify the row key encoding.
  */
 @ApiAudience.Private
 public final class LayoutCapsule {
   private final KijiTableLayout mLayout;
   private final KijiColumnNameTranslator mTranslator;
+  private final CellEncoderProvider mCellEncoderProvider;
+  private final CellDecoderProvider mCellDecoderProvider;
 
   /**
    * Default constructor.
@@ -43,9 +41,16 @@ public final class LayoutCapsule {
    * @param layout the layout of the table.
    * @param translator the ColumnNameTranslator for the given layout.
    */
-  public LayoutCapsule(final KijiTableLayout layout, final KijiColumnNameTranslator translator) {
+  public LayoutCapsule(
+      final KijiTableLayout layout,
+      final KijiColumnNameTranslator translator,
+      final CellEncoderProvider cellEncoderProvider,
+      final CellDecoderProvider cellDecoderProvider
+  ) {
     mLayout = layout;
     mTranslator = translator;
+    mCellEncoderProvider = cellEncoderProvider;
+    mCellDecoderProvider = cellDecoderProvider;
   }
 
   /**
@@ -62,5 +67,21 @@ public final class LayoutCapsule {
    */
   public KijiColumnNameTranslator getKijiColumnNameTranslator() {
     return mTranslator;
+  }
+
+  /**
+   * Get the cell encoder provider for the associated layout.
+   * @return the cell encoder provider for the associated layout.
+   */
+  public CellEncoderProvider getCellEncoderProvider() {
+    return mCellEncoderProvider;
+  }
+
+  /**
+   * Get the cell decoder provider for the associated layout.
+   * @return the cell decoder provider for the associated layout.
+   */
+  public CellDecoderProvider getCellDecoderProvider() {
+    return mCellDecoderProvider;
   }
 }

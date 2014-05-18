@@ -43,7 +43,7 @@ import org.kiji.schema.KijiDataRequest;
 import org.kiji.schema.KijiIOException;
 import org.kiji.schema.KijiRowData;
 import org.kiji.schema.KijiRowScanner;
-import org.kiji.schema.layout.impl.CellDecoderProvider;
+import org.kiji.schema.layout.impl.BaseCellDecoderProvider;
 import org.kiji.schema.util.Debug;
 
 /**
@@ -72,7 +72,7 @@ public final class HBaseKijiRowScanner implements KijiRowScanner {
   private final Scan mScan;
 
   /** Provider for cell decoders. */
-  private final CellDecoderProvider mCellDecoderProvider;
+  private final BaseCellDecoderProvider mCellDecoderProvider;
 
   /** States of a row scanner instance. */
   private static enum State {
@@ -114,7 +114,7 @@ public final class HBaseKijiRowScanner implements KijiRowScanner {
     private KijiDataRequest mDataRequest;
     private HBaseKijiTable mTable;
     private Scan mScan;
-    private CellDecoderProvider mCellDecoderProvider;
+    private BaseCellDecoderProvider mCellDecoderProvider;
     private boolean mReopenScannerOnTimeout;
 
     /**
@@ -167,7 +167,7 @@ public final class HBaseKijiRowScanner implements KijiRowScanner {
      * @param cellDecoderProvider Provider for cell decoders.
      * @return This options instance.
      */
-    public Options withCellDecoderProvider(CellDecoderProvider cellDecoderProvider) {
+    public Options withCellDecoderProvider(BaseCellDecoderProvider cellDecoderProvider) {
       mCellDecoderProvider = cellDecoderProvider;
       return this;
     }
@@ -204,7 +204,7 @@ public final class HBaseKijiRowScanner implements KijiRowScanner {
      *
      * @return the provider for cell decoders.
      */
-    public CellDecoderProvider getCellDecoderProvider() {
+    public BaseCellDecoderProvider getCellDecoderProvider() {
       return mCellDecoderProvider;
     }
 
